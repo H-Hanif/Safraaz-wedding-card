@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="nl">
+<head>
+    <meta charset="utf-8">
+    <title>Trouwuitnodiging</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root{
+            --pk-green:#01411C;
+            --ps-red:#CE1126;
+            --ps-green:#007A3D;
+            --gold:#c8a96a;
+            --ink:#111;
+        }
+
+        body{
+            margin:0;
+            font-family: Inter, system-ui, Arial, sans-serif;
+            background:#000;
+            overflow-x:hidden;
+        }
+
+        .stage{
+            max-width:430px;
+            margin:0 auto;
+            min-height:100vh;
+        }
+
+        .screen{
+            display:none;
+            min-height:100vh;
+            transition: opacity .5s ease, transform .5s ease;
+            opacity:0;
+            transform: translateY(20px);
+        }
+
+        .screen.active{
+            display:block;
+        }
+
+        .screen.show{
+            opacity:1;
+            transform: translateY(0);
+        }
+
+        /* ===== HOME BACKGROUND GIF ===== */
+        .page-bg{
+            background: url("img/vB6eCf.gif") center/cover no-repeat;
+            position: relative;
+        }
+
+        .page-bg::before{
+            content:"";
+            position:absolute;
+            inset:0;
+            background: rgba(0,0,0,.45);
+            z-index:0;
+        }
+
+        .page-bg > *{
+            position: relative;
+            z-index:1;
+        }
+
+        /* ===== ENVELOPE ===== */
+        .hero{
+            padding:30px 18px;
+            text-align:center;
+            color:white;
+        }
+
+        .mini-pill{
+            display:inline-block;
+            padding:6px 14px;
+            border-radius:999px;
+            background: rgba(255,255,255,.15);
+            backdrop-filter: blur(6px);
+            font-weight:600;
+            margin-bottom:10px;
+        }
+
+        .envelope-wrap{
+            height:520px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            position:relative;
+        }
+
+        .envelope{
+            width:340px;
+            height:220px;
+            position:relative;
+            cursor:pointer;
+        }
+
+        .env-body{
+            position:absolute;
+            inset:0;
+            border-radius:22px;
+            background: linear-gradient(180deg,#fff,#eee);
+            box-shadow:0 20px 50px rgba(0,0,0,.3);
+            overflow:hidden;
+        }
+
+        .env-body::after{
+            content:"";
+            position:absolute;
+            left:0;right:0;bottom:0;
+            height:5px;
+            background: linear-gradient(90deg,var(--pk-green),var(--ps-red),var(--ps-green));
+        }
+
+        .env-flap{
+            position:absolute;
+            top:0;left:0;right:0;
+            height:60%;
+            transform-origin: top;
+            transition: transform .8s ease;
+        }
+
+        .env-flap::before{
+            content:"";
+            position:absolute;
+            inset:0;
+            background: linear-gradient(180deg,#fafafa,#e5e5e5);
+            clip-path: polygon(0 0,100% 0,50% 100%);
+            border-radius:22px 22px 0 0;
+        }
+
+        .seal{
+            position:absolute;
+            top:48%;
+            left:50%;
+            transform:translate(-50%,-50%);
+            width:64px;height:64px;
+            border-radius:50%;
+            background: radial-gradient(circle at 30% 30%,#fff,#ddd);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-family:'Great Vibes',cursive;
+            font-size:28px;
+            color:#333;
+            box-shadow:0 10px 25px rgba(0,0,0,.3);
+            transition: all .6s ease;
+            z-index:3;
+        }
+
+        .seal::after{
+            content:"";
+            position:absolute;
+            inset:-3px;
+            border-radius:50%;
+            background: conic-gradient(var(--pk-green),#000,var(--ps-red),var(--ps-green),var(--pk-green));
+            z-index:-1;
+            opacity:.6;
+        }
+
+        .letter{
+            position:absolute;
+            left:18px;right:18px;
+            top:20px;
+            height:180px;
+            background:#fff;
+            border-radius:18px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            text-align:center;
+            opacity:0;
+            transform: translateY(40px);
+            transition: all .8s ease;
+            box-shadow:0 15px 40px rgba(0,0,0,.25);
+        }
+
+        .letter .script{
+            font-family:'Great Vibes',cursive;
+            font-size:34px;
+            color:#444;
+        }
+
+        .envelope.open .env-flap{
+            transform: rotateX(160deg);
+        }
+
+        .envelope.open .seal{
+            opacity:0;
+            transform:translate(-50%,-50%) scale(.7);
+        }
+
+        .envelope.open .letter{
+            opacity:1;
+            transform: translateY(-20px);
+        }
+
+        .tap-hint{
+            position:absolute;
+            bottom:20px;
+            width:100%;
+            text-align:center;
+            color:#fff;
+            opacity:.8;
+            font-size:.9rem;
+        }
+
+        /* ===== INVITE PAGE ===== */
+        .invite{
+            min-height:100vh;
+            background: linear-gradient(180deg,#f7f9fc,#fff);
+            padding-bottom:60px;
+        }
+
+        .invite-header{
+            padding:30px 18px 10px;
+            text-align:center;
+        }
+
+        .title-top{
+            letter-spacing:.2em;
+            font-size:.8rem;
+            color:#777;
+            text-transform:uppercase;
+        }
+
+        .names{
+            font-family:'Great Vibes',cursive;
+            font-size:56px;
+            margin:8px 0 0;
+        }
+
+        .names .amp{
+            font-size:32px;
+            margin:0 8px;
+        }
+
+        .date{
+            margin-top:10px;
+            color:#555;
+            font-weight:600;
+        }
+
+        .scene{
+            position:relative;
+            height:380px;
+            margin:14px;
+            border-radius:26px;
+            overflow:hidden;
+            background: linear-gradient(180deg,#cfe9ff,#fff);
+            box-shadow:0 15px 40px rgba(0,0,0,.15);
+        }
+
+        .lights{
+            position:absolute;
+            top:0;left:0;right:0;
+            height:70px;
+            background:
+                    radial-gradient(circle,var(--gold) 0 4px,transparent 5px) 0 36px/44px 44px repeat-x;
+            opacity:.8;
+        }
+
+        .bird{
+            position:absolute;
+            width:60px;
+            animation: fly 10s linear infinite;
+            opacity:.8;
+        }
+
+        .bird.b2{ top:120px; animation-duration:12s; opacity:.6;}
+        .bird.b3{ top:170px; animation-duration:14s; opacity:.5;}
+
+        @keyframes fly{
+            0%{ left:-80px; }
+            100%{ left:500px; }
+        }
+
+        .countdown{
+            padding:20px 18px;
+        }
+
+        .count-title{
+            font-family:'Great Vibes',cursive;
+            font-size:34px;
+            text-align:center;
+            margin-bottom:6px;
+        }
+
+        .stat{
+            background:#fff;
+            border-radius:18px;
+            padding:16px;
+            text-align:center;
+            box-shadow:0 10px 30px rgba(0,0,0,.1);
+            position:relative;
+            overflow:hidden;
+        }
+
+        .stat::after{
+            content:"";
+            position:absolute;
+            left:0;right:0;bottom:0;
+            height:3px;
+            background: linear-gradient(90deg,var(--pk-green),var(--ps-red),var(--ps-green));
+        }
+
+        .stat .num{
+            font-size:28px;
+            font-weight:700;
+        }
+
+        .stat .lab{
+            font-size:.75rem;
+            letter-spacing:.12em;
+            color:#777;
+            text-transform:uppercase;
+        }
+
+        .btn-soft{
+            border-radius:999px;
+            padding:10px 16px;
+            font-weight:600;
+            border:none;
+            background: linear-gradient(90deg,var(--pk-green),var(--ps-green));
+            color:white;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="stage">
+
+    <!-- ===== SCREEN 1 HOME ===== -->
+    <section id="screenEnvelope" class="screen active show page-bg">
+        <div class="hero">
+            <div class="mini-pill">💍 Trouwuitnodiging</div>
+            <h2 style="font-family:'Great Vibes',cursive;font-size:42px;margin:10px 0 0;">Open onze uitnodiging</h2>
+
+            <div class="envelope-wrap">
+                <div id="envelope" class="envelope">
+                    <div class="env-body"></div>
+                    <div class="env-flap"></div>
+                    <div class="seal" id="sealText">A&Y</div>
+                    <div class="letter">
+                        <div>
+                            <div style="color:#666;">Speciaal voor jou</div>
+                            <div class="script">Open de kaart</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tap-hint">Klik op de envelop om te openen</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SCREEN 2 INVITE ===== -->
+    <section id="screenInvite" class="screen">
+        <div class="invite">
+
+            <div class="invite-header">
+                <div class="title-top">Wij gaan trouwen</div>
+                <div class="names">
+                    <span id="name1">Amina</span>
+                    <span class="amp">&</span>
+                    <span id="name2">Yaser</span>
+                </div>
+                <div class="date" id="eventDateText">Zaterdag 21 juni 2026</div>
+
+                <div class="mt-3 d-flex justify-content-center gap-2">
+                    <button id="backBtn" class="btn-soft">← Terug</button>
+                    <button id="scrollBtn" class="btn-soft">↓ Details</button>
+                </div>
+            </div>
+
+            <div class="scene">
+                <div class="lights"></div>
+
+                <!-- Birds -->
+                <svg class="bird b1" viewBox="0 0 120 60" style="top:80px;">
+                    <path d="M10,40 C30,10 50,10 70,40 C55,30 45,30 30,40 C45,25 55,25 90,40 C75,10 95,10 110,40"
+                          fill="none" stroke="#000" stroke-width="4" stroke-linecap="round"/>
+                </svg>
+
+                <svg class="bird b2" viewBox="0 0 120 60">
+                    <path d="M10,40 C30,15 50,15 70,40 C55,30 45,30 30,40 C45,28 55,28 90,40 C75,15 95,15 110,40"
+                          fill="none" stroke="#000" stroke-width="4" stroke-linecap="round"/>
+                </svg>
+
+                <svg class="bird b3" viewBox="0 0 120 60">
+                    <path d="M10,40 C30,18 50,18 70,40 C55,32 45,32 30,40 C45,30 55,30 90,40 C75,18 95,18 110,40"
+                          fill="none" stroke="#000" stroke-width="4" stroke-linecap="round"/>
+                </svg>
+
+            </div>
+
+            <div id="details" class="countdown">
+                <div class="count-title">Aftellen</div>
+                <p class="text-center text-muted mb-3">Tot de mooiste dag van ons leven</p>
+
+                <div class="row g-3">
+                    <div class="col-6">
+                        <div class="stat">
+                            <div id="dDays" class="num">0</div>
+                            <div class="lab">Dagen</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat">
+                            <div id="dHours" class="num">0</div>
+                            <div class="lab">Uren</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat">
+                            <div id="dMinutes" class="num">0</div>
+                            <div class="lab">Minuten</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat">
+                            <div id="dSeconds" class="num">0</div>
+                            <div class="lab">Seconden</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+</div>
+
+<script>
+    const CONFIG = {
+        name1: "Amina",
+        name2: "Yaser",
+        initials: "A&Y",
+        eventDate: new Date(2026,5,21,15,0,0),
+        eventDateText: "Zaterdag 21 juni 2026"
+    };
+
+    document.getElementById("name1").textContent = CONFIG.name1;
+    document.getElementById("name2").textContent = CONFIG.name2;
+    document.getElementById("sealText").textContent = CONFIG.initials;
+    document.getElementById("eventDateText").textContent = CONFIG.eventDateText;
+
+    const envelope = document.getElementById("envelope");
+    const screenEnvelope = document.getElementById("screenEnvelope");
+    const screenInvite = document.getElementById("screenInvite");
+    const backBtn = document.getElementById("backBtn");
+    const scrollBtn = document.getElementById("scrollBtn");
+
+    let opened = false;
+
+    envelope.addEventListener("click", () => {
+        if(opened) return;
+        opened = true;
+        envelope.classList.add("open");
+
+        setTimeout(() => {
+            screenEnvelope.classList.remove("show");
+            setTimeout(() => {
+                screenEnvelope.classList.remove("active");
+                screenInvite.classList.add("active");
+                requestAnimationFrame(()=>screenInvite.classList.add("show"));
+            },300);
+        },800);
+    });
+
+    backBtn.addEventListener("click", () => {
+        screenInvite.classList.remove("show");
+        setTimeout(() => {
+            screenInvite.classList.remove("active");
+            envelope.classList.remove("open");
+            opened = false;
+            screenEnvelope.classList.add("active");
+            requestAnimationFrame(()=>screenEnvelope.classList.add("show"));
+        },300);
+    });
+
+    scrollBtn.addEventListener("click", () => {
+        document.getElementById("details").scrollIntoView({behavior:"smooth"});
+    });
+
+    function pad(n){ return String(n).padStart(2,"0"); }
+
+    function updateCountdown(){
+        const now = new Date();
+        let diff = CONFIG.eventDate - now;
+        if(diff < 0) diff = 0;
+
+        const sec = Math.floor(diff/1000);
+        const days = Math.floor(sec/86400);
+        const hours = Math.floor((sec%86400)/3600);
+        const minutes = Math.floor((sec%3600)/60);
+        const seconds = sec%60;
+
+        document.getElementById("dDays").textContent = days;
+        document.getElementById("dHours").textContent = pad(hours);
+        document.getElementById("dMinutes").textContent = pad(minutes);
+        document.getElementById("dSeconds").textContent = pad(seconds);
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown,1000);
+</script>
+
+</body>
+</html>
