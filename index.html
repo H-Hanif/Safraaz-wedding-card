@@ -41,18 +41,12 @@
             transform: translateY(20px);
         }
 
-        .screen.active{
-            display:block;
-        }
-
-        .screen.show{
-            opacity:1;
-            transform: translateY(0);
-        }
+        .screen.active{ display:block; }
+        .screen.show{ opacity:1; transform: translateY(0); }
 
         /* ===== HOME BACKGROUND GIF ===== */
         .page-bg{
-            background-color: white;
+            background-color: beige;
             position: relative;
         }
 
@@ -64,10 +58,7 @@
             z-index:0;
         }
 
-        .page-bg > *{
-            position: relative;
-            z-index:1;
-        }
+        .page-bg > *{ position: relative; z-index:1; }
 
         /* ===== ENVELOPE ===== */
         .hero{
@@ -187,19 +178,9 @@
             color:#444;
         }
 
-        .envelope.open .env-flap{
-            transform: rotateX(160deg);
-        }
-
-        .envelope.open .seal{
-            opacity:0;
-            transform:translate(-50%,-50%) scale(.7);
-        }
-
-        .envelope.open .letter{
-            opacity:1;
-            transform: translateY(-20px);
-        }
+        .envelope.open .env-flap{ transform: rotateX(160deg); }
+        .envelope.open .seal{ opacity:0; transform:translate(-50%,-50%) scale(.7); }
+        .envelope.open .letter{ opacity:1; transform: translateY(-20px); }
 
         .tap-hint{
             position:absolute;
@@ -236,54 +217,32 @@
             margin:8px 0 0;
         }
 
-        .names .amp{
-            font-size:32px;
-            margin:0 8px;
-        }
+        .names .amp{ font-size:32px; margin:0 8px; }
 
-        .date{
-            margin-top:10px;
-            color:#555;
-            font-weight:600;
-        }
+        .date{ margin-top:10px; color:#555; font-weight:600; }
 
+        /* ===== SCENE WITH BACKGROUND IMAGE ===== */
         .scene{
             position:relative;
             height:380px;
             margin:14px;
             border-radius:26px;
             overflow:hidden;
-            background: linear-gradient(180deg,#cfe9ff,#fff);
+            background: url("img/vB6eCf.gif") center/cover no-repeat;
             box-shadow:0 15px 40px rgba(0,0,0,.15);
         }
 
-        .lights{
+        .scene::before{
+            content:"";
             position:absolute;
-            top:0;left:0;right:0;
-            height:70px;
-            background:
-                    radial-gradient(circle,var(--gold) 0 4px,transparent 5px) 0 36px/44px 44px repeat-x;
-            opacity:.8;
+            inset:0;
+            background: linear-gradient(180deg, rgba(255,255,255,.2), rgba(255,255,255,.6));
+            z-index:0;
         }
 
-        .bird{
-            position:absolute;
-            width:60px;
-            animation: fly 10s linear infinite;
-            opacity:.8;
-        }
+        .scene > *{ position:relative; z-index:1; }
 
-        .bird.b2{ top:120px; animation-duration:12s; opacity:.6;}
-        .bird.b3{ top:170px; animation-duration:14s; opacity:.5;}
-
-        @keyframes fly{
-            0%{ left:-80px; }
-            100%{ left:500px; }
-        }
-
-        .countdown{
-            padding:20px 18px;
-        }
+        .countdown{ padding:20px 18px; }
 
         .count-title{
             font-family:'Great Vibes',cursive;
@@ -310,11 +269,7 @@
             background: linear-gradient(90deg,var(--pk-green),var(--ps-red),var(--ps-green));
         }
 
-        .stat .num{
-            font-size:28px;
-            font-weight:700;
-        }
-
+        .stat .num{ font-size:28px; font-weight:700; }
         .stat .lab{
             font-size:.75rem;
             letter-spacing:.12em;
@@ -330,7 +285,6 @@
             background: linear-gradient(90deg,var(--pk-green),var(--ps-green));
             color:white;
         }
-
     </style>
 </head>
 
@@ -348,7 +302,7 @@
                 <div id="envelope" class="envelope">
                     <div class="env-body"></div>
                     <div class="env-flap"></div>
-                    <div class="seal" id="sealText">A&Y</div>
+                    <div class="seal" id="sealText">A&S</div>
                     <div class="letter">
                         <div>
                             <div style="color:#666;">Speciaal voor jou</div>
@@ -381,26 +335,7 @@
                 </div>
             </div>
 
-            <div class="scene">
-                <div class="lights"></div>
-
-                <!-- Birds -->
-                <svg class="bird b1" viewBox="0 0 120 60" style="top:80px;">
-                    <path d="M10,40 C30,10 50,10 70,40 C55,30 45,30 30,40 C45,25 55,25 90,40 C75,10 95,10 110,40"
-                          fill="none" stroke="#000" stroke-width="4" stroke-linecap="round"/>
-                </svg>
-
-                <svg class="bird b2" viewBox="0 0 120 60">
-                    <path d="M10,40 C30,15 50,15 70,40 C55,30 45,30 30,40 C45,28 55,28 90,40 C75,15 95,15 110,40"
-                          fill="none" stroke="#000" stroke-width="4" stroke-linecap="round"/>
-                </svg>
-
-                <svg class="bird b3" viewBox="0 0 120 60">
-                    <path d="M10,40 C30,18 50,18 70,40 C55,32 45,32 30,40 C45,30 55,30 90,40 C75,18 95,18 110,40"
-                          fill="none" stroke="#000" stroke-width="4" stroke-linecap="round"/>
-                </svg>
-
-            </div>
+            <div class="scene"></div>
 
             <div id="details" class="countdown">
                 <div class="count-title">Aftellen</div>
@@ -442,8 +377,8 @@
 <script>
     const CONFIG = {
         name1: "Amina",
-        name2: "Yaser",
-        initials: "A&Y",
+        name2: "Shah",
+        initials: "A&S",
         eventDate: new Date(2026,5,21,15,0,0),
         eventDateText: "Zaterdag 21 juni 2026"
     };
